@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+
+	<!-- ================================================================= -->
+	<!-- a console appender -->
+	<!-- ================================================================= -->
+	<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%-5p] [%M] - %m (%F:%L)%n" />
+		</layout>
+	</appender>
+
+	<!-- ================================================================= -->
+	<!-- a rolling file appender -->
+	<!-- ================================================================= -->
+	<appender name="logFile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="~/logs/harvest.log" />
+		<param name="Append" value="false" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd_HH'.log'"></param>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d [%-5p] [%M] - %m (%F:%L)%n" />
+		</layout>
+
+	</appender>
+	<appender name="logFile-error" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="~/logs/harvest-errors.log" />
+		<param name="Append" value="false" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d [%-5p] [%M] - %m (%F:%L)%n" />
+		</layout>
+	</appender>
+
+	<logger name="org.harvest.crawler">
+		<level value="all" />
+		<appender-ref ref="stdout" />
+		<appender-ref ref="logFile" />
+		<appender-ref ref="logFile-error" />
+	</logger>
+</log4j:configuration>

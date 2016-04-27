@@ -1,0 +1,28 @@
+/**
+ * @author Van
+ * @Version: 1.0
+ * @DateTime: 2012-11-11
+ */
+
+function $package(ns) {
+	if (typeof(ns) != "string")
+		return;
+	ns = ns.split(".");
+	var o, ni;
+	for (var i = 0, len = ns.length;i < len, ni = ns[i]; i++) {
+		try {
+			o = (o ? (o[ni] = o[ni] || {}) : (eval(ni + "=" + ni + "||{}")))
+		} catch (e) {
+			o = eval(ni + "={}")
+		}
+	}
+}
+
+function kd(){
+	document.onkeydown=function(){
+		if(event.keyCode == 13){
+			loaddata();
+			return false;
+		}
+	}
+}

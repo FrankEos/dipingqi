@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.dipingqi.dao.DipingqiDBManager">
+
+	<insert id="insert_posts" parameterType="java.util.Map"
+		useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[
+        INSERT INTO `dpq_posts` (`post_keywords`,`post_source`,`post_content`,`post_title`,`post_excerpt`,`post_content_filtered`) 
+        VALUES (#{post_keywords},#{post_source},#{post_content},#{post_title},#{post_excerpt},#{content_md5})
+    ]]>
+	</insert>
+
+	<insert id="insert_relationships" parameterType="java.util.Map"
+		useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[
+        INSERT INTO `dpq_term_relationships` (`object_id`,`term_id`) 
+        VALUES (#{object_id},#{term_id})
+    ]]>
+	</insert>
+
+	<select id="selectMd5" parameterType="java.util.Map" resultType="java.util.Map">
+        <![CDATA[
+            select post_content_filtered from `dpq_posts`
+        ]]>
+		<where>
+            <![CDATA[
+                post_content_filtered = #{content_md5}
+            ]]>
+		</where>
+	</select>
+
+
+	<select id="selectIdbyMd5" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+        <![CDATA[
+            select id from `dpq_posts`
+        ]]>
+		<where>
+            <![CDATA[
+                post_content_filtered = #{content_md5}
+            ]]>
+		</where>
+	</select>
+
+	<select id="selectId" parameterType="java.util.Map" resultType="java.util.Map">
+        <![CDATA[
+            select id from `dpq_posts`
+        ]]>
+		<where>
+            <![CDATA[
+                id = #{id} 
+            ]]>
+		</where>
+	</select>
+
+	<delete id="deleteById" parameterType="java.util.Map">
+        <![CDATA[
+            delete from `dpq_posts`
+        ]]>
+		<where>
+            <![CDATA[
+                id = #{id} 
+            ]]>
+		</where>
+	</delete>
+</mapper>

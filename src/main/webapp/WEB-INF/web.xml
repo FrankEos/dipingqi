@@ -1,0 +1,94 @@
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" id="WebApp_1400726331113">
+	<!-- Spring MVC start -->
+	<servlet>
+		<servlet-name>springmvc</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<!-- 默认所对应的配置文件是WEB-INF下的{servlet-name}-servlet.xml，这里可以自定义路径 -->
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:spring-config.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springmvc</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>springmvc</servlet-name>
+		<url-pattern>/preLogin</url-pattern>
+	</servlet-mapping>
+	<!-- Spring MVC end -->
+	
+	<!-- 图片验证码配置开始 -->
+	<servlet>
+		<servlet-name>ImageServlet</servlet-name>
+		<servlet-class> org.harvest.web.servlet.ImageServlet</servlet-class>
+		<init-param>
+			<param-name>width</param-name>
+			<param-value>65</param-value>
+		</init-param>
+		<init-param>
+			<param-name>height</param-name>
+			<param-value>23</param-value>
+		</init-param>
+		<init-param>
+			<param-name>codeCount</param-name>
+			<param-value>4</param-value>
+		</init-param>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>ImageServlet</servlet-name>
+		<url-pattern>/ImageServlet</url-pattern>
+	</servlet-mapping>
+
+	<!-- Spring 刷新Introspector防止内存泄露 -->
+	<listener>
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+
+	<filter>
+		<filter-name>characterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>characterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	
+	<servlet>
+		<servlet-name>CrawlServlet</servlet-name>
+		<servlet-class>org.harvest.crawler.CrawlServlet</servlet-class>
+		<init-param>
+			<!-- 每执行一个任务后线程休眠时间 单位秒 主要作用是给其它程序释放cpu资源 -->
+			<param-name>threadSleep</param-name>
+			<param-value>2</param-value>
+		</init-param>
+		<init-param>
+			<!-- IP锁定后线程休眠时间 单位秒 -->
+			<param-name>ipLockSleep</param-name>
+			<param-value>600</param-value>
+		</init-param>
+		<load-on-startup>9</load-on-startup>
+	</servlet>
+	
+	
+	
+	<welcome-file-list>
+		<welcome-file>preLogin</welcome-file>
+	</welcome-file-list>
+
+</web-app>
