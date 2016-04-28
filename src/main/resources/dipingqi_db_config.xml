@@ -8,14 +8,14 @@
 			<transactionManager type="JDBC" />
 			<dataSource type="POOLED">
 				<property name="driver" value="com.mysql.jdbc.Driver" />
-				<property name="url" value="jdbc:mysql://127.0.0.1:3306/harvest?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true" />
-				<property name="username" value="frank" />
-				<property name="password" value="abc123" />
+				<property name="url" value="jdbc:mysql://127.0.0.1:3306/dipingqi?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true" />
+				<property name="username" value="root" />
+				<property name="password" value="123456" />
 			</dataSource>
 		</environment>
 	</environments>
 
 	<mappers>
-		<mapper resource="org/harvest/crawler/dao/sqlmap/HarvestDB.xml" />
+		<mapper resource="org/harvest/crawler/dao/sqlmap/DipingqiDB.xml" />
 	</mappers>
 </configuration>

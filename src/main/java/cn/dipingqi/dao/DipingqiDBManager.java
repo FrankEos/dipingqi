@@ -17,7 +17,7 @@ public class DipingqiDBManager {
 
 	public static final Logger logger = Logger.getLogger(DipingqiDBManager.class);
 
-	public static final int knowledge = 1;
+	public static final int KNOWLEDGE = 1;
 
 	public static final int NEWS = 2;
 
@@ -64,6 +64,10 @@ public class DipingqiDBManager {
 		insert("insert_relationships", map);
 
 		return id;
+	}
+
+	public void updateContent(HashMap<String, String> param) {
+		update("update_content", param);
 	}
 
 	/**
@@ -241,4 +245,5 @@ public class DipingqiDBManager {
 		return null;
 	}
 	// Factory Methods Begin
+
 }

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/classes" path="src/main/java">
+	<classpathentry kind="src" path="src/main/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
+	<classpathentry kind="src" path="src/main/resources">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
@@ -95,6 +95,8 @@
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/xalan-2.7.2.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/xercesImpl-2.11.0.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/xml-apis-1.4.01.jar"/>
-	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/harvest-framework.jar"/>
-	<classpathentry kind="output" path="target/classes"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/harvest-framework.jar" sourcepath="/harvest"/>
+	<classpathentry kind="lib" path="/opt/program_files/apache-tomcat-6.0.26/lib/jsp-api.jar"/>
+	<classpathentry kind="lib" path="/opt/program_files/apache-tomcat-6.0.26/lib/servlet-api.jar"/>
+	<classpathentry kind="output" path="src/main/webapp/WEB-INF/classes"/>
 </classpath>

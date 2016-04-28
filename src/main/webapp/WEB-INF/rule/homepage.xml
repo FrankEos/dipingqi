@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+<!--     <var-def name="pageUrl" >
+http://www.dipingqi.net.cn
+    </var-def> -->
+    <var-def name="products" >
+        <try>
+            <body>
+                <xpath expression="//tr/td[@class=&apos;menubg1&apos;]/a" >
+                    <html-to-xml outputtype="pretty" >
+                        <http
+                            charset="gbk"
+                            cookie-policy="browser"
+                            url="${pageUrl}" >
+                        </http>
+                    </html-to-xml>
+                </xpath>
+            </body>
+            <catch>
+            </catch>
+        </try>
+    </var-def>
+    <var-def name="listUrl" >
+        <template>
+			<![CDATA[<li>]]>
+			<![CDATA[${products}]]>
+			<![CDATA[</li>]]>
+		</template>
+    </var-def>
+    <var-def name="xmlcontent" >
+		<![CDATA[<?xml version="1.0" encoding="UTF-8"?>]]>
+		<![CDATA[<homepage>]]>
+		<try>
+            <body>
+                <loop
+                    index="i"
+                    item="item" >
+                    <list>
+                        <xpath expression="//a" >
+                            <var name="listUrl" />
+                        </xpath>
+                    </list>
+
+                    <body>
+                        <xquery>
+                            <xq-param
+                                name="item"
+                                type="node()" >
+                                <var name="item" />
+                            </xq-param>
+
+                            <xq-expression>
+							<![CDATA[
+								declare variable $item as node() external;
+	                            let $detailUrl := data($item/a/@href)
+
+	                            return
+	                            <catgory>
+	                                 <url>{$detailUrl}</url>
+	                            </catgory>
+	                        ]]>
+                            </xq-expression>
+                        </xquery>
+                    </body>
+                </loop>
+            </body>
+
+            <catch>
+            </catch>
+        </try>
+		<![CDATA[ </homepage>]]>
+	</var-def>
+
+<!--     <file
+        action="write"
+        path="output/debug.log"
+        type="text" >
+        <var name="xmlcontent" />
+    </file> -->
+
+</config>

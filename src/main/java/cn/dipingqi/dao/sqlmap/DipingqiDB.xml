@@ -19,6 +19,18 @@
     ]]>
 	</insert>
 
+	<update id="update_content" parameterType="java.util.Map">
+        <![CDATA[
+            update `dpq_posts`
+            set post_content = #{post_content}
+        ]]>
+		<where>
+            <![CDATA[
+                id = #{id}
+            ]]>
+		</where>
+	</update>
+
 	<select id="selectMd5" parameterType="java.util.Map" resultType="java.util.Map">
         <![CDATA[
             select post_content_filtered from `dpq_posts`

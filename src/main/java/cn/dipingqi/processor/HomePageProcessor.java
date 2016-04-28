@@ -13,7 +13,7 @@ import org.harvest.web.bean.UrlContent;
 
 import cn.dipingqi.wrap.ScraperWrapper;
 
-public class ListUrlProcessor extends BaseProcessor {
+public class HomePageProcessor extends BaseProcessor {
 
 	private Long pgmOrder;
 
@@ -42,7 +42,7 @@ public class ListUrlProcessor extends BaseProcessor {
 		Element root = dom.getRootElement();
 		for (Iterator iter = root.elementIterator(); iter.hasNext();) {
 			Element element = (Element) iter.next();
-			if ("item".equalsIgnoreCase(element.getName())) {
+			if ("catgory".equalsIgnoreCase(element.getName())) {
 				String url = element.elementText("url").trim();
 				if (this.controller.getFrontier().addNew(url, pgmOrder, curi.getTag(), "")) {
 					this.controller.getCrawlerInf().addAllUrl();

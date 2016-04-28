@@ -1,3 +1,6 @@
+src/main/webapp/WEB-INF/.gitignore
+src/main/webapp/WEB-INF/classes
+src/main/webapp/WEB-INF/lib
 target/
 pom.xml.tag
 pom.xml.releaseBackup
