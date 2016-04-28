@@ -32,11 +32,13 @@ public class ContentUrlProcessor extends BaseProcessor {
 
 	private static final String HOST = "http://www.dipingqi.net.cn";
 
-	private static final String WEB_ROOT_DIR = "/var/www/ThinkCMF";
+	private static final String WEB_IMG_DIR = "/home/www/dipingqi/data/upload";
 
 	DipingqiDBManager mDBManager = DipingqiDBManager.getInstance();
 
 	HashMap<String, String> mRecordMap = new HashMap<String, String>();
+
+	private StringBuilder mHtmlText = new StringBuilder();
 
 	@Override
 	protected void extractContentUrls(UrlContent curi) {
@@ -45,7 +47,7 @@ public class ContentUrlProcessor extends BaseProcessor {
 		String currentUrl = curi.getUrl();
 		String contentStr = "";
 
-		contentStr = ScraperWrapper.extractContent(this.getRulefile(), currentUrl);
+		contentStr = ScraperWrapper.extractContent(this.getRulefile(), currentUrl, mHtmlText);
 		if (!StringUtil.isEmpty(contentStr)) {
 			content2database(curi, contentStr);
 		} else {
@@ -62,39 +64,40 @@ public class ContentUrlProcessor extends BaseProcessor {
 			Element root = dom.getRootElement();
 
 			mRecordMap.clear();
+
+			String content = mHtmlText.toString();
 			String title = null;
-			String content = null;
 			String imageUrls = null;
 
+			if (!StringUtil.isEmpty(content)) {
+				mRecordMap.put("post_content", content);
+				String excerpt = content.replace(" ", "");
+				excerpt = excerpt.substring(0, excerpt.length() / 10);
+				mRecordMap.put("post_excerpt", excerpt);
+			} else {
+				logger.debug("content is null !");
+				return false;
+			}
+
+			mRecordMap.put("post_source", curi.getUrl());
 			for (Iterator iter = root.elementIterator(); iter.hasNext();) {
 				Element element = (Element) iter.next();
 				if ("title".equalsIgnoreCase(element.getName())) {
 					title = element.getTextTrim();
-					title = title.split(" ")[0];
 					if (!StringUtil.isEmpty(title)) {
 						mRecordMap.put("post_title", title);
 					} else {
-						return false;
-					}
-
-				} else if ("content".equalsIgnoreCase(element.getName())) {
-
-					content = element.getTextTrim();
-					if (!StringUtil.isEmpty(content)) {
-						mRecordMap.put("post_content", content);
-					} else {
+						logger.debug("title is null !");
 						return false;
 					}
 
 				} else if ("imageUrls".equalsIgnoreCase(element.getName())) {
-
 					imageUrls = element.getTextTrim();
-
 				}
 
 			}
 
-			logger.debug(String.format("title:%s content:%s imageUrls:%s", title, content, imageUrls));
+			logger.debug(String.format("title:%s imageUrls:%s", title, imageUrls));
 
 			// harvest
 			mRecordMap.put("content_md5", Util.getMD5(content));
@@ -119,17 +122,23 @@ public class ContentUrlProcessor extends BaseProcessor {
 			}
 
 		}
+		logger.debug("insert into database faile !");
 
 		return false;
 	}
 
 	public boolean downloadImages(HashMap<String, String> map, String rawUrl) {
-		if (!mDBManager.isIdExist(map)) {
+		if (StringUtil.isEmpty(rawUrl)) {
 			return false;
 		}
 		String content = map.get("post_content");
 
-		String urls[] = rawUrl.split(" ");
+		String urls[] = null;
+		if (rawUrl.contains(" ")) {
+			urls = rawUrl.split(" ");
+		} else {
+			urls = new String[] { rawUrl };
+		}
 
 		for (String url : urls) {
 			String suffix = url.contains(".png") ? ".png" : ".jpg";
@@ -140,23 +149,22 @@ public class ContentUrlProcessor extends BaseProcessor {
 			if (!url.startsWith("http")) {
 				fullUrl = HOST + url;
 			}
-			fullUrl = getDownloadUrl(fullUrl);
+			//fullUrl = getDownloadUrl(fullUrl);
 
+			logger.debug("download image from " + fullUrl + " to " + path);
 			if (download(fullUrl, path)) {
-				String newUrl = path.replace(WEB_ROOT_DIR, HOST);
+				String newUrl = path.replace(WEB_IMG_DIR, HOST);
 				content = content.replace(url, newUrl);
 			} else {
 				if (download(fullUrl, path)) {
-					String newUrl = path.replace(WEB_ROOT_DIR, HOST);
+					String newUrl = path.replace(WEB_IMG_DIR, HOST);
 					content = content.replace(url, newUrl);
 				} else {
-					mDBManager.deleteById(map);
 					return false;
 				}
 			}
 		}
-
-		mDBManager.updateContent(map);
+		map.put("post_content", content);
 		return true;
 	}
 
@@ -164,7 +172,7 @@ public class ContentUrlProcessor extends BaseProcessor {
 		Date date = new Date(System.currentTimeMillis());
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
 		String today = format.format(date);
-		return String.format("%s%c%s%c%s%c%s", WEB_ROOT_DIR, File.separatorChar, "images", File.separatorChar, today,
+		return String.format("%s%c%s%c%s%c%s", WEB_IMG_DIR, File.separatorChar, "images", File.separatorChar, today,
 				File.separatorChar, fileName);
 	}
 

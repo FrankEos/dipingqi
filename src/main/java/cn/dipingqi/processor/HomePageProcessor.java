@@ -25,7 +25,6 @@ public class HomePageProcessor extends BaseProcessor {
 
 		String currentUrl = curi.getUrl();
 		String contentStr = "";
-
 		contentStr = ScraperWrapper.extractContent(this.getRulefile(), currentUrl);
 		if (!StringUtil.isEmpty(contentStr)) {
 			content2database(curi, contentStr);

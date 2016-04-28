@@ -7,7 +7,7 @@ http://www.dipingqi.net.cn
     <var-def name="products" >
         <try>
             <body>
-                <xpath expression="//tr/td[@class=&apos;menubg1&apos;]/a" >
+                <xpath expression="//tr/td[@class='menubg1']/a" >
                     <html-to-xml outputtype="pretty" >
                         <http
                             charset="gbk"
@@ -72,9 +72,9 @@ http://www.dipingqi.net.cn
 		<![CDATA[ </homepage>]]>
 	</var-def>
 
-<!--     <file
+<!--      <file
         action="write"
-        path="output/debug.log"
+        path="~/output/debug.log"
         type="text" >
         <var name="xmlcontent" />
     </file> -->

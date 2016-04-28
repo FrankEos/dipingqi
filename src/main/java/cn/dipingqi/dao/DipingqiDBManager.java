@@ -30,7 +30,7 @@ public class DipingqiDBManager {
 	private DipingqiDBManager() {
 		Reader reader = null;
 		try {
-			reader = Resources.getResourceAsReader("dipingqi_db_config");
+			reader = Resources.getResourceAsReader("dipingqi_db_config.xml");
 			sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -55,6 +55,7 @@ public class DipingqiDBManager {
 
 	public int insert(HashMap<String, String> map, int type) {
 
+		map.put("post_keywords", "地坪漆的技术指标 地坪漆施工工艺 地坪漆的性能");
 		insert("insert_posts", map);
 		int id = getInsertId(map);
 

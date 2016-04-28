@@ -22,12 +22,12 @@ http://www.dipingqi.net.cn/dpyq/261.html
         </try>
     </var-def>
     <var-def name="title" >
-        <xpath expression="//table/tbody/tr/td[@class=&apos;Font-Weight Font_Size bottom_dashedl_line&apos;]/text()" >
+        <xpath expression="//table/tbody/tr/td[@class='Font-Weight Font_Size bottom_dashedl_line']/text()" >
             <var name="body" />
         </xpath>
     </var-def>
-    <var-def name="content" >
-        <xpath expression="//table/tbody/tr/td/div[@class=&apos;news_body&apos;]" >
+    <var-def name="htmltext" >
+        <xpath expression="//table/tbody/tr/td/div[@class='news_body']" >
             <var name="body" />
         </xpath>
     </var-def>
@@ -35,7 +35,7 @@ http://www.dipingqi.net.cn/dpyq/261.html
         <try>
             <body>
                 <xpath expression="//img/@src" >
-                    <var name="content" />
+                    <var name="htmltext" />
                 </xpath>
             </body>
             <catch>
@@ -46,7 +46,6 @@ http://www.dipingqi.net.cn/dpyq/261.html
         <template>
 			<![CDATA[<article>]]>
 			<![CDATA[<title>${title}</title>]]>
-			<![CDATA[<content>${content}</content>]]>
 			<![CDATA[<imageUrls>${images}</imageUrls>]]>
 			<![CDATA[</article>]]>
 		</template>

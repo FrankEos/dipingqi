@@ -16,6 +16,6 @@
 	</environments>
 
 	<mappers>
-		<mapper resource="org/harvest/crawler/dao/sqlmap/DipingqiDB.xml" />
+		<mapper resource="cn/dipingqi/dao/sqlmap/DipingqiDB.xml" />
 	</mappers>
 </configuration>
