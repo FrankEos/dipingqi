@@ -12,6 +12,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.log4j.Logger;
+import org.harvest.crawler.util.StringUtil;
 
 public class DipingqiDBManager {
 
@@ -54,10 +55,12 @@ public class DipingqiDBManager {
 	}
 
 	public int insert(HashMap<String, String> map, int type) {
-
+		map.put("post_date", StringUtil.nowDateTime());
+		map.put("post_modified", StringUtil.nowDateTime());
 		map.put("post_keywords", "地坪漆的技术指标 地坪漆施工工艺 地坪漆的性能");
 		insert("insert_posts", map);
 		int id = getInsertId(map);
+		map.put("id", String.valueOf(id));
 
 		map.put("object_id", String.valueOf(id));
 		map.put("term_id", String.valueOf(type));

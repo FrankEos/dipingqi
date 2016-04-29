@@ -32,7 +32,7 @@ public class ContentUrlProcessor extends BaseProcessor {
 
 	private static final String HOST = "http://www.dipingqi.net.cn";
 
-	private static final String WEB_IMG_DIR = "/home/www/dipingqi/data/upload";
+	private static final String WEB_IMG_DIR = "/var/www/dipingqi/data";// "/home/www/dipingqi/data/upload";
 
 	DipingqiDBManager mDBManager = DipingqiDBManager.getInstance();
 
@@ -67,13 +67,13 @@ public class ContentUrlProcessor extends BaseProcessor {
 
 			String content = mHtmlText.toString();
 			String title = null;
+			String excerpt = null;
 			String imageUrls = null;
 
 			if (!StringUtil.isEmpty(content)) {
+				content = content.replace("\t", "");
+				content = content.replace(" ", "");
 				mRecordMap.put("post_content", content);
-				String excerpt = content.replace(" ", "");
-				excerpt = excerpt.substring(0, excerpt.length() / 10);
-				mRecordMap.put("post_excerpt", excerpt);
 			} else {
 				logger.debug("content is null !");
 				return false;
@@ -91,6 +91,11 @@ public class ContentUrlProcessor extends BaseProcessor {
 						return false;
 					}
 
+				} else if ("excerpt".equalsIgnoreCase(element.getName())) {
+					excerpt = element.getTextTrim();
+					excerpt = excerpt.replace(" ", "");
+					excerpt = excerpt.substring(0, excerpt.length() > 100 ? 100 : excerpt.length());
+					mRecordMap.put("post_excerpt", excerpt);
 				} else if ("imageUrls".equalsIgnoreCase(element.getName())) {
 					imageUrls = element.getTextTrim();
 				}
@@ -149,7 +154,7 @@ public class ContentUrlProcessor extends BaseProcessor {
 			if (!url.startsWith("http")) {
 				fullUrl = HOST + url;
 			}
-			//fullUrl = getDownloadUrl(fullUrl);
+			// fullUrl = getDownloadUrl(fullUrl);
 
 			logger.debug("download image from " + fullUrl + " to " + path);
 			if (download(fullUrl, path)) {
@@ -224,7 +229,7 @@ public class ContentUrlProcessor extends BaseProcessor {
 		return false;
 	}
 
-	private static String getDownloadUrl(String urlStr) {
+	public static String getDownloadUrl(String urlStr) {
 		String downloadUrl = "";
 		HttpURLConnection conn = null;
 		try {

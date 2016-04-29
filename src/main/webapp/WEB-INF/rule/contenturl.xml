@@ -31,6 +31,11 @@ http://www.dipingqi.net.cn/dpyq/261.html
             <var name="body" />
         </xpath>
     </var-def>
+    <var-def name="excerpt" >
+        <xpath expression="//table/tbody/tr/td/div[@class='news_body']/text()" >
+            <var name="body" />
+        </xpath>
+    </var-def>
     <var-def name="images" >
         <try>
             <body>
@@ -46,6 +51,7 @@ http://www.dipingqi.net.cn/dpyq/261.html
         <template>
 			<![CDATA[<article>]]>
 			<![CDATA[<title>${title}</title>]]>
+			<![CDATA[<excerpt>${excerpt}</excerpt>]]>
 			<![CDATA[<imageUrls>${images}</imageUrls>]]>
 			<![CDATA[</article>]]>
 		</template>

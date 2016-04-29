@@ -6,8 +6,8 @@
 	<insert id="insert_posts" parameterType="java.util.Map"
 		useGeneratedKeys="true" keyProperty="id">
     <![CDATA[
-        INSERT INTO `dpq_posts` (`post_keywords`,`post_source`,`post_content`,`post_title`,`post_excerpt`,`post_content_filtered`) 
-        VALUES (#{post_keywords},#{post_source},#{post_content},#{post_title},#{post_excerpt},#{content_md5})
+        INSERT INTO `dpq_posts` (`post_author`,`post_keywords`,`post_source`,`post_date`,`post_content`,`post_title`,`post_excerpt`,`post_modified`,`post_content_filtered`) 
+        VALUES ("1",#{post_keywords},#{post_source},#{post_date},#{post_content},#{post_title},#{post_excerpt},#{post_modified},#{content_md5})
     ]]>
 	</insert>
 

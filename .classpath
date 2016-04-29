@@ -95,8 +95,9 @@
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/xalan-2.7.2.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/xercesImpl-2.11.0.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/xml-apis-1.4.01.jar"/>
-	<classpathentry kind="lib" path="/home/programs/installed/apache-tomcat-7.0.69/lib/jsp-api.jar"/>
-	<classpathentry kind="lib" path="/home/programs/installed/apache-tomcat-7.0.69/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/harvest-framework.jar" sourcepath="/harvest"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jsp-api.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/htmlcleaner.jar"/>
 	<classpathentry kind="output" path="src/main/webapp/WEB-INF/classes"/>
 </classpath>
