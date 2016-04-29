@@ -13,10 +13,10 @@ import org.webharvest.runtime.variables.Variable;
 import org.xml.sax.InputSource;
 
 public class ScraperWrapper {
-	protected static final Logger logger = BaseProcessor.logger;
+	//protected static final Logger logger = BaseProcessor.logger;
 
 	public static String extractContent(String configFile, String pageUrl) {
-		logger.debug("--- rule:" + configFile + ", pageUrl:" + pageUrl);
+		//logger.debug("--- rule:" + configFile + ", pageUrl:" + pageUrl);
 
 		if (StringUtil.isEmpty(configFile) || StringUtil.isEmpty(pageUrl)) {
 			return null;
@@ -45,19 +45,19 @@ public class ScraperWrapper {
 			content = xmlcontent.toString();
 
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			//logger.error(e.getMessage());
 		} finally {
 			if (scraper != null)
 				scraper.dispose();
 		}
 
-		logger.debug("--- xmlcontent --- :" + content);
+		//logger.debug("--- xmlcontent --- :" + content);
 
 		return content;
 	}
 
 	public static String extractContent(String configFile, String pageUrl, StringBuilder htmltext) {
-		logger.debug("--- rule:" + configFile + ", pageUrl:" + pageUrl);
+		//logger.debug("--- rule:" + configFile + ", pageUrl:" + pageUrl);
 
 		if (StringUtil.isEmpty(configFile) || StringUtil.isEmpty(pageUrl)) {
 			return null;
@@ -89,7 +89,7 @@ public class ScraperWrapper {
 			htmltext.append(xmlcontent.toString());
 
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			//logger.error(e.getMessage());
 		} finally {
 			if (scraper != null)
 				scraper.dispose();

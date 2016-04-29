@@ -1,3 +1,4 @@
+.classpath
 src/main/webapp/WEB-INF/.gitignore
 src/main/webapp/WEB-INF/classes
 src/main/webapp/WEB-INF/lib
