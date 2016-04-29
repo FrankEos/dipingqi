@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Date;
@@ -24,21 +25,26 @@ import org.harvest.crawler.util.StringUtil;
 import org.harvest.crawler.util.Util;
 import org.harvest.crawler.util.XmlUtil;
 import org.harvest.web.bean.UrlContent;
+import org.webharvest.definition.ScraperConfiguration;
+import org.webharvest.runtime.Scraper;
+import org.webharvest.runtime.variables.Variable;
+import org.xml.sax.InputSource;
 
 import cn.dipingqi.dao.DipingqiDBManager;
-import cn.dipingqi.wrap.ScraperWrapper;
 
 public class ContentUrlProcessor extends BaseProcessor {
 
 	private static final String HOST = "http://www.dipingqi.net.cn";
 
-	private static final String WEB_IMG_DIR = "/var/www/dipingqi/data";// "/home/www/dipingqi/data/upload";
+	private static final String WEB_IMG_DIR = "/var/www/dipingqi/data/images";
+
+	private static final String WEB_ROOT = "/var/www/dipingqi";
 
 	DipingqiDBManager mDBManager = DipingqiDBManager.getInstance();
 
 	HashMap<String, String> mRecordMap = new HashMap<String, String>();
 
-	private StringBuilder mHtmlText = new StringBuilder();
+	private String mHtmlText;
 
 	@Override
 	protected void extractContentUrls(UrlContent curi) {
@@ -47,13 +53,48 @@ public class ContentUrlProcessor extends BaseProcessor {
 		String currentUrl = curi.getUrl();
 		String contentStr = "";
 
-		contentStr = ScraperWrapper.extractContent(this.getRulefile(), currentUrl, mHtmlText);
-		if (!StringUtil.isEmpty(contentStr)) {
-			content2database(curi, contentStr);
-		} else {
-			curi.setOper_flag(4);
-		}
+		logger.debug("--- rule:" + getRulefile() + ", pageUrl:" + currentUrl);
 
+		Scraper scraper = null;
+		try {
+			Document dom = XmlUtil.parseXml(this.getRulefile(), true);
+			String strXml = XmlUtil.dom2str(dom);
+			ScraperConfiguration config = new ScraperConfiguration(new InputSource(new StringReader(strXml)));
+
+			scraper = new Scraper(config, "~");
+			scraper.addVariableToContext("pageUrl", currentUrl);
+
+			scraper.getHttpClientManager().getHttpClient().getParams().setConnectionManagerTimeout(16 * 1000);
+			scraper.getHttpClientManager().getHttpClient().getHttpConnectionManager().getParams()
+					.setSoTimeout(16 * 1000);
+			scraper.getHttpClientManager().getHttpClient().getHttpConnectionManager().getParams()
+					.setConnectionTimeout(16 * 1000);
+			scraper.setDebug(true);
+
+			scraper.execute();
+
+			Variable xmlcontent = (Variable) scraper.getContext().getVar("xmlcontent");
+			contentStr = xmlcontent.toString();
+
+			xmlcontent = (Variable) scraper.getContext().getVar("htmltext");
+			mHtmlText = xmlcontent.toString();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		} finally {
+			if (scraper != null)
+				scraper.dispose();
+		}
+		if (!StringUtil.isEmpty(contentStr) && !StringUtil.isEmpty(mHtmlText)) {
+			boolean success = content2database(curi, contentStr);
+			if (success) {
+				curi.setOper_flag(2);
+			} else {
+				curi.setOper_flag(3);
+			}
+		} else {
+			curi.setOper_flag(3);
+		}
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -65,14 +106,13 @@ public class ContentUrlProcessor extends BaseProcessor {
 
 			mRecordMap.clear();
 
-			String content = mHtmlText.toString();
+			String content = mHtmlText;
 			String title = null;
 			String excerpt = null;
 			String imageUrls = null;
 
 			if (!StringUtil.isEmpty(content)) {
-				content = content.replace("\t", "");
-				content = content.replace(" ", "");
+				content = content.replace("\t\t", "");
 				mRecordMap.put("post_content", content);
 			} else {
 				logger.debug("content is null !");
@@ -93,8 +133,9 @@ public class ContentUrlProcessor extends BaseProcessor {
 
 				} else if ("excerpt".equalsIgnoreCase(element.getName())) {
 					excerpt = element.getTextTrim();
+					excerpt = excerpt.replace("\t\t", "");
 					excerpt = excerpt.replace(" ", "");
-					excerpt = excerpt.substring(0, excerpt.length() > 100 ? 100 : excerpt.length());
+					excerpt = excerpt.substring(0, excerpt.length() > 150 ? 150 : excerpt.length());
 					mRecordMap.put("post_excerpt", excerpt);
 				} else if ("imageUrls".equalsIgnoreCase(element.getName())) {
 					imageUrls = element.getTextTrim();
@@ -158,11 +199,11 @@ public class ContentUrlProcessor extends BaseProcessor {
 
 			logger.debug("download image from " + fullUrl + " to " + path);
 			if (download(fullUrl, path)) {
-				String newUrl = path.replace(WEB_IMG_DIR, HOST);
+				String newUrl = path.replace(WEB_ROOT, "");
 				content = content.replace(url, newUrl);
 			} else {
 				if (download(fullUrl, path)) {
-					String newUrl = path.replace(WEB_IMG_DIR, HOST);
+					String newUrl = path.replace(WEB_ROOT, "");
 					content = content.replace(url, newUrl);
 				} else {
 					return false;
@@ -177,8 +218,7 @@ public class ContentUrlProcessor extends BaseProcessor {
 		Date date = new Date(System.currentTimeMillis());
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
 		String today = format.format(date);
-		return String.format("%s%c%s%c%s%c%s", WEB_IMG_DIR, File.separatorChar, "images", File.separatorChar, today,
-				File.separatorChar, fileName);
+		return String.format("%s%c%s%c%s", WEB_IMG_DIR, File.separatorChar, today, File.separatorChar, fileName);
 	}
 
 	private boolean download(String url, String path) {
